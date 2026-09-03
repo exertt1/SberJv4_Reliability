@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+server:
+  port: 8080
+
+mock:
+  services:
+    recommendation:
+      url: http://localhost:8081
+    game:
+      url: http://localhost:8082
+
+adapter:
+  mode: dev
+  timeout: 5000ms

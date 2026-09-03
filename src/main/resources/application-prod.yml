@@ -1,0 +1,20 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+server:
+  port: 8080
+
+services:
+  recommendation:
+    url: https://recommendation-service.ru
+  game:
+    url: https://game-service.ru
+
+adapter:
+  mode: prod
+  timeout: 3000ms
+  retry:
+    maxAttempts: 3
+    backoffDelay: 1000ms
