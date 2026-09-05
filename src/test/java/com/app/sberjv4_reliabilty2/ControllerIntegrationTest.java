@@ -1,6 +1,6 @@
 package com.app.sberjv4_reliabilty2;
 
-import app.Main;
+import com.app.sberjv4_reliabilty2.app.Main;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
