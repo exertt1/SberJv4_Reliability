@@ -2,6 +2,7 @@ package com.app.sberjv4_reliabilty2.app.cfg;
 
 import com.app.sberjv4_reliabilty2.app.adapter.dev.DevGamesAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.dev.DevRecommendationAdapter;
+import com.app.sberjv4_reliabilty2.app.adapter.dev.DevSlowRecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.prod.GamesAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.prod.RecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.cfg.properties.ServicesProperties;
@@ -24,57 +25,72 @@ public class AppConfiguration {
         this.servicesProperties = servicesProperties;
     }
 
-    @Bean
-    public RestClient getRecommendationRestClient() {
-        return RestClient.builder().baseUrl(servicesProperties.getRecommendation().getUrl()).build();
-    }
+//    @Bean
+//    public RestClient getRecommendationRestClient() {
+//        return RestClient.builder().baseUrl(servicesProperties.getRecommendation().getUrl()).build();
+//    }
 
     @Profile("prod")
     @Bean
     public RecommendationAdapter getRecommendationAdapter(
-            @Qualifier("getRecommendationRestClient") RestClient restClient
+            @Qualifier("recommendationRestClient") RestClient restClient
     ) {
         return new RecommendationAdapter(restClient);
     }
 
     @Profile("dev")
     @Bean
-    public DevRecommendationAdapter getDevRecommendationAdapter(@Qualifier("getRecommendationRestClient") RestClient restClient) {
+    public DevRecommendationAdapter getDevRecommendationAdapter(@Qualifier("recommendationRestClient") RestClient restClient) {
         return new DevRecommendationAdapter(restClient);
     }
 
-    @Bean
-    public RestClient getGamesRestClient() {
-        return RestClient.builder().baseUrl(servicesProperties.getGame().getUrl()).build();
-    }
+//    @Bean
+//    public RestClient getGamesRestClient() {
+//        return RestClient.builder().baseUrl(servicesProperties.getGame().getUrl()).build();
+//    }
 
     @Profile("prod")
     @Bean
-    public GamesAdapter getGamesAdapter(@Qualifier("getGamesRestClient") RestClient restClient) {
+    public GamesAdapter getGamesAdapter(@Qualifier("gameRestClient") RestClient restClient) {
         return new GamesAdapter(restClient);
     }
 
     @Profile("dev")
     @Bean
-    public DevGamesAdapter getDevGamesAdapter(@Qualifier("getGamesRestClient") RestClient restClient) {
+    public DevGamesAdapter getDevGamesAdapter(@Qualifier("gameRestClient") RestClient restClient) {
         return new DevGamesAdapter(restClient);
+    }
+
+//    @Bean
+//    public RestClient getSlowRecommendationRestClient() {
+//        return RestClient.builder().baseUrl(servicesProperties.getSlowRecommendation().getUrl()).build();
+//    }
+
+    @Profile("dev")
+    @Bean
+    public DevSlowRecommendationAdapter getDevSlowRecommendationAdapter(
+            @Qualifier("gameSlowRecommendationRestClient") RestClient restClient
+    ) {
+        return new DevSlowRecommendationAdapter(restClient);
     }
 
     @Profile("prod")
     @Bean
     public GamesRecommendationService getGamesRecommendationService(
             @Qualifier("getGamesAdapter") GamesPort gamesAdapter,
-            @Qualifier("getRecommendationAdapter") RecommendationPort recommendationAdapter
+            @Qualifier("getRecommendationAdapter") RecommendationPort recommendationAdapter,
+            @Qualifier("getDevSlowRecommendationAdapter") RecommendationPort slowRecommendationAdapter
     ) {
-        return new GamesRecommendationService(gamesAdapter, recommendationAdapter);
+        return new GamesRecommendationService(gamesAdapter, recommendationAdapter, slowRecommendationAdapter);
     }
 
     @Profile("dev")
     @Bean
     public GamesRecommendationService getDevGamesRecommendationService(
             @Qualifier("getDevGamesAdapter") GamesPort devGamesAdapter,
-            @Qualifier("getDevRecommendationAdapter") RecommendationPort devRecommendationAdapter
+            @Qualifier("getDevRecommendationAdapter") RecommendationPort devRecommendationAdapter,
+            @Qualifier("getDevSlowRecommendationAdapter") RecommendationPort devSlowRecommendationAdapter
     ) {
-        return new GamesRecommendationService(devGamesAdapter, devRecommendationAdapter);
+        return new GamesRecommendationService(devGamesAdapter, devRecommendationAdapter, devSlowRecommendationAdapter);
     }
 }

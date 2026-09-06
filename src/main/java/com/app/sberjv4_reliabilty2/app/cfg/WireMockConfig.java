@@ -72,4 +72,28 @@ public class WireMockConfig {
 
         return server;
     }
+
+    @Bean
+    public WireMockServer getSlowRecommendationServer() {
+        String url = servicesProperties.getSlowRecommendation().getUrl();
+        int port = Integer.parseInt(url.split(":")[2]);
+
+        if (port == 0) {
+            port = 8083;
+        }
+
+        WireMockServer server = new WireMockServer(port);
+
+        server.stubFor(get(urlEqualTo("/recommendations-slow"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[1, 2, 3, 4, 5, 6]")
+                        .withFixedDelay(10000))
+        );
+
+        server.start();
+
+        return server;
+    }
 }

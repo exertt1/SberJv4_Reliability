@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class ServicesProperties {
     private ServiceConfig recommendation = new ServiceConfig();
     private ServiceConfig game = new ServiceConfig();
+    private ServiceConfig slowRecommendation = new ServiceConfig();
 
     @Data
     public static class ServiceConfig {

@@ -4,7 +4,7 @@ spring:
       on-profile: dev
 
 server:
-  port: 8083
+  port: 8084
 
 mock:
   services:
@@ -12,6 +12,9 @@ mock:
       url: http://localhost:8081
     game:
       url: http://localhost:8082
+    slow-recommendation:
+      url:
+        http://localhost:8083
 
 adapter:
   mode: dev

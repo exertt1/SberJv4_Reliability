@@ -1,14 +1,26 @@
 package com.app.sberjv4_reliabilty2.app.web.controller;
 
 import com.app.sberjv4_reliabilty2.app.dto.ErrorResponse;
+import com.app.sberjv4_reliabilty2.app.dto.ReadTimeoutException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.ResourceAccessException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<ReadTimeoutException> handleTimeoutException() {
+        ReadTimeoutException exception = new ReadTimeoutException(
+                HttpStatus.GATEWAY_TIMEOUT.value(),
+                "Сервер-поставщик нагружен, попробуйте ещё раз немного позже..."
+        );
+
+        return ResponseEntity.internalServerError().body(exception);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex, HttpServletRequest request) {

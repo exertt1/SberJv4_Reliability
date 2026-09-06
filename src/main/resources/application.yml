@@ -1,6 +1,14 @@
 spring:
   profiles:
     active: "dev"
+  web:
+    client:
+      connection-timeout: 2s
+      read-timeout: 1s
+
+  mvc:
+    async:
+      request-timeout: 8s
 
 server:
   port: 8083

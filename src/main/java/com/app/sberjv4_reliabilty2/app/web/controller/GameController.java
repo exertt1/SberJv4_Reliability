@@ -32,4 +32,9 @@ public class GameController {
     public ResponseEntity<GameResponse> error() throws Exception {
         throw new Exception("Ошибка");
     }
+
+    @GetMapping("/recommendations-slow")
+    public ResponseEntity<List<Long>> getRecommendationsSlow() {
+        return ResponseEntity.ok(recommendationService.getGamesIdSlow());
+    }
 }
