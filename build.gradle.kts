@@ -31,6 +31,7 @@ dependencies {
     implementation("com.github.tomakehurst:wiremock-standalone:3.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     implementation("org.apache.httpcomponents.client5:httpclient5")
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
 }
 
 tasks.withType<Test> {

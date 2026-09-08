@@ -12,7 +12,7 @@ import java.util.List;
 public class DevSlowRecommendationAdapter implements RecommendationPort {
     private final RestClient restClient;
 
-    public DevSlowRecommendationAdapter(@Qualifier("get") RestClient restClient) {
+    public DevSlowRecommendationAdapter(@Qualifier("gameSlowRecommendationRestClient") RestClient restClient) {
         this.restClient = restClient;
     }
 

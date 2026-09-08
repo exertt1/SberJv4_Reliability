@@ -19,3 +19,11 @@ mock:
 adapter:
   mode: dev
   timeout: 5000ms
+
+resilience4j:
+  ratelimiter:
+    instances:
+      gameRecommendationRateLimiter:
+        limit-for-period: 5
+        limit-refresh-period: 10s
+        timeout-duration: 0s
