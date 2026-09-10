@@ -47,6 +47,8 @@ public class RestClientConfig {
     @Bean
     @Qualifier("gameFailRecommendationRestClient")
     public RestClient failRecommendationRestClient() {
+        System.out.println("failRecommendationRestClient");
+        System.out.println(servicesProperties.getFailRecommendation().getUrl());
         return createRestClient(servicesProperties.getFailRecommendation().getUrl());
     }
 

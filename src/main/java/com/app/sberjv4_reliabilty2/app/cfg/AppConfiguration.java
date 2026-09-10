@@ -7,10 +7,7 @@ import com.app.sberjv4_reliabilty2.app.adapter.dev.DevSlowRecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.prod.GamesAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.prod.RecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.cfg.properties.ServicesProperties;
-import com.app.sberjv4_reliabilty2.app.services.CircuitBreakerService;
-import com.app.sberjv4_reliabilty2.app.services.GamesPort;
-import com.app.sberjv4_reliabilty2.app.services.GamesRecommendationService;
-import com.app.sberjv4_reliabilty2.app.services.RecommendationPort;
+import com.app.sberjv4_reliabilty2.app.services.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -80,9 +77,14 @@ public class AppConfiguration {
     @Bean
     public DevFailRecommendationAdapter getDevFailRecommendationAdapter(
             @Qualifier("gameFailRecommendationRestClient") RestClient restClient,
-            CircuitBreakerService circuitBreakerService
+            CircuitBreakerService circuitBreakerService,
+            RetryService retryService
     ) {
-        return new DevFailRecommendationAdapter(restClient, circuitBreakerService);
+        return new DevFailRecommendationAdapter(
+                restClient,
+                circuitBreakerService,
+                retryService
+        );
     }
 
     @Profile("prod")

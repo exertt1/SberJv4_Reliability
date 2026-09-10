@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
 @Configuration
 @Profile("dev")
@@ -110,12 +111,31 @@ public class WireMockConfig {
         WireMockServer server = new WireMockServer(port);
 
         server.stubFor(get("/recommendation-fail")
+                .inScenario("Retry Scenario")
+                        .whenScenarioStateIs(STARTED)
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(500)
-                        .withBody("{\"error\": \"Internal Server Error\"}")
-                )
+                ).willSetStateTo("first failure")
         );
+
+        server.stubFor(get("/recommendation-fail")
+                .inScenario("Retry Scenario")
+                .whenScenarioStateIs("first failure")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(500))
+                .willSetStateTo("second failure")
+        );
+
+        server.stubFor(get("/recommendation-fail")
+                .inScenario("Retry Scenario")
+                .whenScenarioStateIs("second failure")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody("[1, 2, 3, 4, 5, 6]"))
+                );
 
         server.start();
 
