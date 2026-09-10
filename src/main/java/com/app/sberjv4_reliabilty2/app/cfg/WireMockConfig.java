@@ -96,4 +96,29 @@ public class WireMockConfig {
 
         return server;
     }
+
+    @Bean
+    public WireMockServer getFailRecommendationServer() {
+        String url = servicesProperties.getFailRecommendation().getUrl();
+
+        int port = Integer.parseInt(url.split(":")[2]);
+
+        if (port == 0) {
+            port = 8084;
+        }
+
+        WireMockServer server = new WireMockServer(port);
+
+        server.stubFor(get("/recommendation-fail")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(500)
+                        .withBody("{\"error\": \"Internal Server Error\"}")
+                )
+        );
+
+        server.start();
+
+        return server;
+    }
 }

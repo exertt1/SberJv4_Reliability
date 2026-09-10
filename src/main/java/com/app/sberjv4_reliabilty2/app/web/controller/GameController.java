@@ -52,6 +52,11 @@ public class GameController {
         return ResponseEntity.ok(recommendationService.getGamesIdSlow());
     }
 
+    @GetMapping("/fail-recommendation")
+    public ResponseEntity<List<Long>> getRecommendationFail() {
+        return ResponseEntity.ok(recommendationService.getGamesIdFail());
+    }
+
     public ResponseEntity<String> rateLimiterFallback(Throwable t) {
         return ResponseEntity.
                 status(429)

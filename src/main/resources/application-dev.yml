@@ -4,7 +4,19 @@ spring:
       on-profile: dev
 
 server:
-  port: 8084
+  port: 8085
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
 
 mock:
   services:
@@ -15,6 +27,9 @@ mock:
     slow-recommendation:
       url:
         http://localhost:8083
+    fail-recommendation:
+      url:
+        http://localhost:8084
 
 adapter:
   mode: dev
@@ -27,3 +42,17 @@ resilience4j:
         limit-for-period: 5
         limit-refresh-period: 10s
         timeout-duration: 0s
+  circuitbreaker:
+    instances:
+      recommendationCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        permitted-number-of-calls-in-half-open-state: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        event-consumer-buffer-size: 10
+
+
+

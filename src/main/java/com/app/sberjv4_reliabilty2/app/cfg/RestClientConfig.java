@@ -44,6 +44,12 @@ public class RestClientConfig {
         return createRestClient(servicesProperties.getSlowRecommendation().getUrl());
     }
 
+    @Bean
+    @Qualifier("gameFailRecommendationRestClient")
+    public RestClient failRecommendationRestClient() {
+        return createRestClient(servicesProperties.getFailRecommendation().getUrl());
+    }
+
     private RestClient createRestClient(String baseUrl) {
 
         System.out.println("⏰ ===== RestClient Config =====");

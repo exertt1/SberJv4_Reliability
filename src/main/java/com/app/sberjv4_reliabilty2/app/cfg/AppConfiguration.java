@@ -1,11 +1,13 @@
 package com.app.sberjv4_reliabilty2.app.cfg;
 
+import com.app.sberjv4_reliabilty2.app.adapter.dev.DevFailRecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.dev.DevGamesAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.dev.DevRecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.dev.DevSlowRecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.prod.GamesAdapter;
 import com.app.sberjv4_reliabilty2.app.adapter.prod.RecommendationAdapter;
 import com.app.sberjv4_reliabilty2.app.cfg.properties.ServicesProperties;
+import com.app.sberjv4_reliabilty2.app.services.CircuitBreakerService;
 import com.app.sberjv4_reliabilty2.app.services.GamesPort;
 import com.app.sberjv4_reliabilty2.app.services.GamesRecommendationService;
 import com.app.sberjv4_reliabilty2.app.services.RecommendationPort;
@@ -74,14 +76,29 @@ public class AppConfiguration {
         return new DevSlowRecommendationAdapter(restClient);
     }
 
+    @Profile("dev")
+    @Bean
+    public DevFailRecommendationAdapter getDevFailRecommendationAdapter(
+            @Qualifier("gameFailRecommendationRestClient") RestClient restClient,
+            CircuitBreakerService circuitBreakerService
+    ) {
+        return new DevFailRecommendationAdapter(restClient, circuitBreakerService);
+    }
+
     @Profile("prod")
     @Bean
     public GamesRecommendationService getGamesRecommendationService(
             @Qualifier("getGamesAdapter") GamesPort gamesAdapter,
             @Qualifier("getRecommendationAdapter") RecommendationPort recommendationAdapter,
-            @Qualifier("getDevSlowRecommendationAdapter") RecommendationPort slowRecommendationAdapter
+            @Qualifier("getDevSlowRecommendationAdapter") RecommendationPort slowRecommendationAdapter,
+            @Qualifier("getDevFailRecommendationAdapter") RecommendationPort failRecommendationAdapter
     ) {
-        return new GamesRecommendationService(gamesAdapter, recommendationAdapter, slowRecommendationAdapter);
+        return new GamesRecommendationService(
+                gamesAdapter,
+                recommendationAdapter,
+                slowRecommendationAdapter,
+                failRecommendationAdapter
+        );
     }
 
     @Profile("dev")
@@ -89,8 +106,14 @@ public class AppConfiguration {
     public GamesRecommendationService getDevGamesRecommendationService(
             @Qualifier("getDevGamesAdapter") GamesPort devGamesAdapter,
             @Qualifier("getDevRecommendationAdapter") RecommendationPort devRecommendationAdapter,
-            @Qualifier("getDevSlowRecommendationAdapter") RecommendationPort devSlowRecommendationAdapter
+            @Qualifier("getDevSlowRecommendationAdapter") RecommendationPort devSlowRecommendationAdapter,
+            @Qualifier("getDevFailRecommendationAdapter") RecommendationPort failRecommendationAdapter
     ) {
-        return new GamesRecommendationService(devGamesAdapter, devRecommendationAdapter, devSlowRecommendationAdapter);
+        return new GamesRecommendationService(
+                devGamesAdapter,
+                devRecommendationAdapter,
+                devSlowRecommendationAdapter,
+                failRecommendationAdapter
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.app.sberjv4_reliabilty2.app.adapter.dev;
 
 import com.app.sberjv4_reliabilty2.app.services.RecommendationPort;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,7 +13,9 @@ import java.util.List;
 public class DevRecommendationAdapter implements RecommendationPort {
     private final RestClient restClient;
 
-    public DevRecommendationAdapter(@Qualifier("recommendationRestClient") RestClient restClient) {
+    public DevRecommendationAdapter(
+            @Qualifier("recommendationRestClient") RestClient restClient
+    ) {
         this.restClient = restClient;
     }
 

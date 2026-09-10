@@ -1,6 +1,8 @@
 package com.app.sberjv4_reliabilty2.app.adapter.dev;
 
+import com.app.sberjv4_reliabilty2.app.services.CircuitBreakerService;
 import com.app.sberjv4_reliabilty2.app.services.RecommendationPort;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,7 +14,9 @@ import java.util.List;
 public class DevSlowRecommendationAdapter implements RecommendationPort {
     private final RestClient restClient;
 
-    public DevSlowRecommendationAdapter(@Qualifier("gameSlowRecommendationRestClient") RestClient restClient) {
+    public DevSlowRecommendationAdapter(
+            @Qualifier("gameSlowRecommendationRestClient") RestClient restClient
+    ) {
         this.restClient = restClient;
     }
 
