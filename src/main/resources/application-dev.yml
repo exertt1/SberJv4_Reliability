@@ -2,6 +2,11 @@ spring:
   config:
     activate:
       on-profile: dev
+  cache:
+    type: caffeine
+    cache-names: games
+    caffeine:
+      spec: maximumSize=100, expireAfterWrite=60s
 
 server:
   port: 8085
@@ -63,4 +68,7 @@ resilience4j:
         retry-exceptions:
           - java.lang.Exception
 
-
+fallback:
+  recommendation:
+    enabled: true
+    default-ids: [1, 2 ,3]

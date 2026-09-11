@@ -1,5 +1,6 @@
 package com.app.sberjv4_reliabilty2.app.adapter.dev;
 
+import com.app.sberjv4_reliabilty2.app.cfg.properties.FallbackProperties;
 import com.app.sberjv4_reliabilty2.app.services.CircuitBreakerService;
 import com.app.sberjv4_reliabilty2.app.services.RecommendationPort;
 import com.app.sberjv4_reliabilty2.app.services.RetryService;
@@ -21,14 +22,18 @@ public class  DevFailRecommendationAdapter implements RecommendationPort {
 
     private final Retry retry;
 
+    private final FallbackProperties fallbackProperties;
+
     public DevFailRecommendationAdapter(
             RestClient restClient,
             CircuitBreakerService circuitBreakerService,
-            RetryService retryService
+            RetryService retryService,
+            FallbackProperties fallbackProperties
     ) {
         this.restClient = restClient;
         this.circuitBreaker = circuitBreakerService.getCircuitBreaker();
         this.retry = retryService.getRetry();
+        this.fallbackProperties = fallbackProperties;
     }
 
     @Override
@@ -47,6 +52,17 @@ public class  DevFailRecommendationAdapter implements RecommendationPort {
                 retrySupply
         );
 
-        return decorateSupplier.get();
+        try {
+            return decorateSupplier.get();
+        } catch (Exception ex) {
+            if (fallbackProperties.isEnabled()) {
+                return handleFallback();
+            }
+            throw ex;
+        }
+    }
+
+    private List<Long> handleFallback() {
+        return fallbackProperties.getDefaultIds();
     }
 }

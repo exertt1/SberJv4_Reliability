@@ -56,6 +56,8 @@ public class WireMockConfig {
         WireMockServer server = new WireMockServer(port);
 
         server.stubFor(get(urlPathMatching("/games/.*"))
+                        .inScenario("Cache Scenario")
+                        .whenScenarioStateIs(STARTED)
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -65,6 +67,15 @@ public class WireMockConfig {
                                     "name": "Elden Ring"
                                 }
                                 """)
+                ).willSetStateTo("success")
+
+        );
+
+        server.stubFor(get(urlPathMatching("/games/.*"))
+                        .inScenario("Cache Scenario")
+                        .whenScenarioStateIs("success")
+                .willReturn(aResponse()
+                        .withStatus(500)
                 )
 
         );
@@ -111,31 +122,11 @@ public class WireMockConfig {
         WireMockServer server = new WireMockServer(port);
 
         server.stubFor(get("/recommendation-fail")
-                .inScenario("Retry Scenario")
-                        .whenScenarioStateIs(STARTED)
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(500)
-                ).willSetStateTo("first failure")
+                )
         );
-
-        server.stubFor(get("/recommendation-fail")
-                .inScenario("Retry Scenario")
-                .whenScenarioStateIs("first failure")
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(500))
-                .willSetStateTo("second failure")
-        );
-
-        server.stubFor(get("/recommendation-fail")
-                .inScenario("Retry Scenario")
-                .whenScenarioStateIs("second failure")
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(200)
-                        .withBody("[1, 2, 3, 4, 5, 6]"))
-                );
 
         server.start();
 
